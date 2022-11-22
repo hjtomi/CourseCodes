@@ -82,6 +82,7 @@ while is_game_on:
 
     if (hit_player or hit_ai) and paddle_hit_detection_cooldown == 0:
         ball.paddle_bounce()
+        ball.increase_speed()
         paddle_hit_detection_cooldown = 1
 
     # Detect when the ball flies out
@@ -97,9 +98,5 @@ while is_game_on:
         screen.update()
 
         time.sleep(2)
-
-
-
-
 
 screen.exitonclick()

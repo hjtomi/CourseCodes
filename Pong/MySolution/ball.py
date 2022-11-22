@@ -1,13 +1,14 @@
 import random
 from turtle import Turtle
 
-SPEED = 0.4
+STARTING_SPEED = 0.4
+SPEED_INCREASE = 0.05
 
 
 class Ball(Turtle):
     def __init__(self):
         super().__init__()
-        self.speed = SPEED
+        self.move_speed = STARTING_SPEED
         self.shape("circle")
         self.color("white")
         self.penup()
@@ -15,6 +16,7 @@ class Ball(Turtle):
     def reset_position(self):
         self.goto(0, 0)
         self.set_facing()
+        self.move_speed = STARTING_SPEED
 
     def set_facing(self):
         sides = {1: [135, 180], 2: [0, 45], 3: [180, 225], 4: [315, 359]}
@@ -23,7 +25,10 @@ class Ball(Turtle):
         self.setheading(random_degree)
 
     def move(self):
-        self.forward(self.speed)
+        self.forward(self.move_speed)
+
+    def increase_speed(self):
+        self.move_speed += SPEED_INCREASE
 
     def wall_bounce(self):
         # Decide where the ball should face according to where the ball is facing at the time of impact
