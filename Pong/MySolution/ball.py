@@ -1,7 +1,7 @@
 import random
 from turtle import Turtle
 
-SPEED = 0.3
+SPEED = 0.4
 
 
 class Ball(Turtle):

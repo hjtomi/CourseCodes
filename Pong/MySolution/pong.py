@@ -42,6 +42,12 @@ while is_game_on:
 
     ball.move()
 
+    # AI logic
+    if ai.ycor() > ball.ycor():
+        ai.down()
+    elif ai.ycor() < ball.ycor():
+        ai.up()
+
     screen.onkeypress(player.move_up_pressed, "w")
     screen.onkey(player.move_up_let, "w")
 
