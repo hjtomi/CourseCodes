@@ -35,6 +35,10 @@ class Snake:
 
         self.segments.append(new_segment)
 
+    def die(self):
+        for segment in self.segments:
+            segment.goto(1000, 1000)
+
     # LOGIC:
     # The extension of the snake is just adding an extra square on top of the last one
     # So the next move cycle each square excluding the one added moves ahead
