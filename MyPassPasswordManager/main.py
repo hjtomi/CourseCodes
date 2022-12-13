@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -37,17 +38,62 @@ def save_data():
     email_username = entry_email_username.get()
     password = entry_password.get()
 
+    # Prepare for JSON
+    new_data = {
+        website: {
+            "Email/Username": email_username,
+            "Password": password
+        }
+    }
+
     if website and email_username and password:
+        try:
+            with open("passwords.json", "r") as data_file:
+                # Assign old data
+                data = json.load(data_file)
 
-        is_ok = messagebox.askokcancel(title="Confirm", message="Are you sure you want to save?")
-        if is_ok:
-            with open("passwords.txt", "a") as data_file:
-                data_file.write(f"{website},{email_username},{password}\n")
+                # Update old data with new
+                data.update(new_data)
 
-                entry_website.delete(0, END)
-                entry_password.delete(0, END)
+        except FileNotFoundError:
+            with open("passwords.json", "w") as data_file:
+                # Save first data in the file
+                json.dump(new_data, data_file, indent=4)
+
+        else:
+            with open("passwords.json", "w") as data_file:
+                # Save updated data
+                json.dump(data, data_file, indent=4)
+
+        finally:
+            entry_website.delete(0, END)
+            entry_password.delete(0, END)
     else:
         messagebox.showerror(title="Error!", message="Please fill everything")
+
+
+# ---------------------------- FIND DATA ---------------------------------#
+
+
+def find_password():
+    try:
+        with open("passwords.json", "r") as data_file:
+            data = json.load(data_file)
+
+    except FileNotFoundError:
+        messagebox.showwarning(title="Error", message="No data file found")
+
+    else:
+        desired_page = entry_website.get()
+        if desired_page in data:
+            desired_page_email = data[desired_page]["Email/Username"]
+            desired_page_password = data[desired_page]["Password"]
+
+            messagebox.showinfo(title=desired_page,
+                                message=f"email: {desired_page_email}\npassword: {desired_page_password}")
+
+        else:
+            messagebox.showerror(title="Error", message=f"No data registered to '{desired_page}' website")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -66,7 +112,7 @@ label_email_username = Label(window, text="Email/Username:")
 label_password = Label(window, text="Password:")
 
 # Entries
-entry_website = Entry(window, width=52)
+entry_website = Entry(window, width=32)
 entry_website.focus()
 entry_email_username = Entry(window, width=52)
 entry_email_username.insert(0, "hjtomipls@gmail.com")
@@ -75,6 +121,7 @@ entry_password = Entry(window, width=32)
 # Buttons
 button_generate = Button(window, text="Generate Password", command=generate_password)
 button_add = Button(window, text="Add", width=34, command=save_data)
+button_search = Button(window, text="Search", width=14, command=find_password)
 
 
 canvas.grid(row=0, column=1)
@@ -83,11 +130,12 @@ label_website.grid(row=1, column=0)
 label_email_username.grid(row=2, column=0)
 label_password.grid(row=3, column=0)
 
-entry_website.grid(row=1, column=1, columnspan=2, sticky="w")
+entry_website.grid(row=1, column=1)
 entry_email_username.grid(row=2, column=1, columnspan=2, sticky="w")
 entry_password.grid(row=3, column=1, sticky="w")
 
 button_generate.grid(row=3, column=2, sticky="w")
 button_add.grid(row=4, column=1, columnspan=2, sticky="w")
+button_search.grid(row=1, column=2)
 
 window.mainloop()
