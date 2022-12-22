@@ -10,6 +10,7 @@ label = Label(text="This is old text")
 label.config(text="This is new text")
 label.pack()
 
+
 # Buttons
 def action():
     print("Do something")
@@ -36,6 +37,7 @@ text.insert(END, "Example of multi-line text entry.")
 print(text.get("1.0", END))
 text.pack()
 
+
 # Spinbox
 def spinbox_used():
     # gets the current value in spinbox.
@@ -43,12 +45,14 @@ def spinbox_used():
 spinbox = Spinbox(from_=0, to=10, width=5, command=spinbox_used)
 spinbox.pack()
 
+
 # Scale
 # Called with current scale value.
 def scale_used(value):
     print(value)
 scale = Scale(from_=0, to=100, command=scale_used)
 scale.pack()
+
 
 # Checkbutton
 def checkbutton_used():
@@ -59,6 +63,7 @@ checked_state = IntVar()
 checkbutton = Checkbutton(text="Is On?", variable=checked_state, command=checkbutton_used)
 checked_state.get()
 checkbutton.pack()
+
 
 # Radiobutton
 def radio_used():
@@ -82,4 +87,15 @@ for item in fruits:
     listbox.insert(fruits.index(item), item)
 listbox.bind("<<ListboxSelect>>", listbox_used)
 listbox.pack()
+
+
+# OptionMenu
+def drop_used(value):
+    print(value)
+
+vegetables = ["broccoli", "tomato"]
+options_state = StringVar(value="Vegetables")
+option_menu = OptionMenu(window, options_state, *vegetables, command=drop_used)
+option_menu.pack()
+
 window.mainloop()
