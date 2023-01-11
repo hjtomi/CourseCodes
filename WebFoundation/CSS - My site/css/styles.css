@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    text-align: center;
+    font-family: "Merriweather Sans", serif;
+}
+
+h1 {
+    font-family: Pacifico;
+    margin: 0 auto 0 auto;
+}
+
+.pro {
+    text-decoration: underline;
+}
+
+.top-container {
+    background-color: #EAEAEA;
+    padding-top: 200px;
+}
+
+.middle-container {
+    
+}
+
+.bottom-container {
+    
+}
+
+.mountain {
+    width: 1000px;
+}
+
+.top-cloud {
+    width: 250px;
+    position: absolute;
+    right: 400px;
+    top: 50px;
+}
+
+.bottom-cloud {
+    width: 250px;
+    position: absolute;
+    left: 400px;
+    top: 275px;
+}
+
+.python-logo {
+    width: 300px;
+}
