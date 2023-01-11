@@ -14,16 +14,16 @@ h1 {
 }
 
 .top-container {
-    background-color: #EAEAEA;
+    background-color: #FAF8F1;
     padding-top: 200px;
 }
 
 .middle-container {
-    
+    background-color: #FAEAB1;
 }
 
 .bottom-container {
-    
+    background-color: #E5BA73;
 }
 
 .mountain {
@@ -44,6 +44,15 @@ h1 {
     top: 275px;
 }
 
+.pfp {
+    border-radius: 50%;
+}
+
 .python-logo {
     width: 300px;
+}
+
+.soccer-ball {
+    width: 300px;
+    border-radius: 50%;
 }
