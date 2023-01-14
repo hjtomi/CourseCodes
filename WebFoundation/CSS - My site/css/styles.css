@@ -1,58 +1,142 @@
 body {
-    margin: 0;
     text-align: center;
     font-family: "Merriweather Sans", serif;
+    margin: 0;
 }
 
 h1 {
     font-family: Pacifico;
-    margin: 0 auto 0 auto;
+    font-size: 5.625rem;
+    color: #6D8B74;
+    margin: 50px 0 auto 0;
+    line-height: 2;
+}
+
+h2 {
+    color: #789395;
+    font-weight: normal;
+    font-size: 3rem;
+}
+
+h3 {
+    color: #789395;
+    font-size: 2rem;
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 2;
+}
+
+hr {
+    width: 5%;
+    border-style: dotted none none none;
+    border-color: grey;
+    border-width: 10px;
+    margin: 150px auto;
+}
+
+.profession {
+    font-size: 2.5rem;
+    color: #6D8B74;
 }
 
 .pro {
     text-decoration: underline;
 }
 
+.mountain {
+    width: 1000px;
+    margin-top: 100px;
+}
+
 .top-container {
-    background-color: #FAF8F1;
+    background-color: #D3E4CD;
     padding-top: 200px;
+    padding-bottom: 20px;
 }
 
 .middle-container {
-    background-color: #FAEAB1;
+    background-color: #FEF5ED;
+    padding: 100px 0;
 }
 
 .bottom-container {
-    background-color: #E5BA73;
-}
-
-.mountain {
-    width: 1000px;
+    background-color: #D3E4CD;
+    padding: 50px;
 }
 
 .top-cloud {
-    width: 250px;
+    width: 310px;
     position: absolute;
-    right: 400px;
-    top: 50px;
+    right: 350px;
+    top: 100px;
 }
 
 .bottom-cloud {
     width: 250px;
     position: absolute;
-    left: 400px;
-    top: 275px;
+    left: 350px;
+    top: 500px;
 }
 
 .pfp {
     border-radius: 50%;
 }
 
+.skill-row {
+    width: 50%;
+    text-align: center;
+    /* set margin to auto to center elements with width */
+    margin: 200px auto;
+    text-align: left;
+    
+}
+
 .python-logo {
-    width: 300px;
+    width: 275px;
+    float: left;
+    margin-right: 30px;
 }
 
 .soccer-ball {
     width: 300px;
-    border-radius: 50%;
+    float: right;
+    margin-left: 30px;
+}
+
+.btn {
+    -webkit-border-radius: 33;
+    -moz-border-radius: 33;
+    border-radius: 33px;
+    font-family: Arial;
+    color: #FEF5ED;
+    font-size: 25px;
+    background: #99A799;
+    padding: 5px 12px 5px 12px;
+    border: solid #000000 4px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #5F7161;
+    text-decoration: none;
+}
+
+.footer-link {
+    margin: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #5F7161;
+}
+
+.footer-link:hover {
+    color: #FEF5ED;
+}
+
+.full-name {
+    margin-top: 35px;
+    font-size: .9rem;
+    color: white;
 }
