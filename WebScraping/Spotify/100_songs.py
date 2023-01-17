@@ -29,14 +29,12 @@ sp = spotipy.Spotify(
     )
 )
 user_id = sp.current_user()["id"]
-print(user_id)
 
 # Searching Spotify for songs by title
 song_uris = []
 year = date.split("-")[0]
 for name in song_names:
     result = sp.search(q=f"track:{name} year:{year}", type="track")
-    print(result)
     try:
         uri = result["tracks"]["items"][0]["uri"]
         song_uris.append(uri)

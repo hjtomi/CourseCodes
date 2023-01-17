@@ -44,13 +44,3 @@ for i, (title, link, upvote) in enumerate(zip(titles, links, upvotes)):
 
 most_upvoted_news_index = upvotes.index(max(upvotes)) + 1
 print(diction[most_upvoted_news_index])
-
-
-# with open("website.html", encoding="UTF-8") as file:
-#     html_text = file.read()
-#
-# soup = BeautifulSoup(html_text, "html.parser")
-# print(soup.find_all("li"))
-#
-# soup.find
-
