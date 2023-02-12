@@ -1,0 +1,13 @@
+.separator {
+    border-width: 20px;
+    color: green;
+    margin: 0;
+}
+
+.rb {
+    background-color: red;
+}
+
+.bb {
+    background-color: blue;
+}

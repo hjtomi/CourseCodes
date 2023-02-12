@@ -1,0 +1,27 @@
+.house-logo {
+    transition: 0.3s;
+}
+
+.house-logo:hover {
+    background-color: #2C1D41;
+    transition: 0.3s;
+}
+
+.house-logo:active {
+    background-color: #ffc107;
+    transition: 0.1s;
+}
+
+.info {
+    height: 600px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    background-color: rgba(237, 178, 14, 0.8);
+}
+
+.year-book-photo {
+    margin-right: 30px;
+    margin-bottom: 20px;
+    float: left;
+    width: 100px;
+}
