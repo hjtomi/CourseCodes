@@ -1,12 +1,11 @@
-import os
-
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, FloatField
 from wtforms.validators import DataRequired
 import requests
+import os
 
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
 
