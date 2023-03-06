@@ -4,9 +4,8 @@ from flask_ckeditor import CKEditor
 from datetime import date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import CreatePostForm, RegisterForm, LoginForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from functools import wraps
 
@@ -15,6 +14,18 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 login_manager = LoginManager(app)
+gravatar = Gravatar(app,
+                    size=100,
+                    rating='g',
+                    default='retro',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
+
+# JINJA ENV VARIABLE
+app.jinja_env.globals["LOGGED_IN"] = False
+app.jinja_env.globals["IS_ADMIN"] = False
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -24,22 +35,43 @@ db = SQLAlchemy(app)
 
 # CONFIGURE TABLES
 
+class User(db.Model, UserMixin):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String, nullable=False)
+
+    posts = db.relationship("BlogPost", back_populates="user")
+    comments = db.relationship("Comment", back_populates="user")
+
+
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.String(250), nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user = db.relationship("User", back_populates="posts")
+
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
+    comments = db.relationship("Comment", back_populates="parent_post")
 
-class User(db.Model, UserMixin):
+
+class Comment(db.Model):
+    __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False, unique=True)
-    password = db.Column(db.String, nullable=False)
+    text = db.Column(db.String, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user = db.relationship("User", back_populates="comments")
+
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
+    parent_post = db.relationship("BlogPost", back_populates="comments")
 
 
 with app.app_context():
@@ -53,11 +85,6 @@ def admin_only(function):
             function(*args, **kwargs)
         return abort(403)
     return inner_function
-
-
-# JINJA ENV VARIABLE
-app.jinja_env.globals["LOGGED_IN"] = False
-app.jinja_env.globals["IS_ADMIN"] = False
 
 
 @login_manager.user_loader
@@ -104,8 +131,10 @@ def login():
 
         if check_password_hash(user.password, request.form.get("password")):
             login_user(user)
+            print(user.id)
             if user.id == 1:
                 app.jinja_env.globals["IS_ADMIN"] = True
+                print(app.jinja_env.globals["IS_ADMIN"])
             return redirect(url_for('home'))
 
         flash("Incorrect password!")
@@ -123,10 +152,23 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
+    if request.method == "POST":
+        new_comment = Comment(
+            text=request.form.get("body"),
+            user=current_user,
+            parent_post=BlogPost.query.get(post_id)
+        )
+
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(url_for('show_post', post_id=post_id))
+
     requested_post = BlogPost.query.get(post_id)
-    return render_template("post.html", post=requested_post)
+    form = CommentForm()
+    print(Comment.query.filter_by(post_id=post_id).all())
+    return render_template("post.html", post=requested_post, form=form, comments=Comment.query.filter_by(post_id=post_id).all())
 
 
 @app.route("/about")
@@ -139,8 +181,8 @@ def contact():
     return render_template("contact.html")
 
 
-@app.route("/new-post")
 @admin_only
+@app.route("/new-post", methods=["GET", "POST"])
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -149,31 +191,32 @@ def add_new_post():
             subtitle=form.subtitle.data,
             body=form.body.data,
             img_url=form.img_url.data,
-            author=current_user,
+            user=current_user,
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("home"))
+
     return render_template("make-post.html", form=form)
 
 
-@app.route("/edit-post/<int:post_id>")
 @admin_only
+@app.route("/edit-post/<int:post_id>")
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
         title=post.title,
         subtitle=post.subtitle,
         img_url=post.img_url,
-        author=post.author,
+        author=post.user,
         body=post.body
     )
     if edit_form.validate_on_submit():
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.author = edit_form.author.data
+        post.user = edit_form.user.data
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
@@ -181,8 +224,8 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form)
 
 
-@app.route("/delete/<int:post_id>")
 @admin_only
+@app.route("/delete/<int:post_id>")
 def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
