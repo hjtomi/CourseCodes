@@ -1,14 +1,23 @@
 # Webscraping https://www.payscale.com/college-salary-report/majors-that-pay-you-back/bachelors for updated data
 import pandas as pd
-from bs4 import BeautifulSoup
+import bs4
 import requests
 
-response = requests.get('https://www.payscale.com/college-salary-report/majors-that-pay-you-back/bachelors')
-page_html = response.text
+data_dict = {
+    'rank': [],
+    'major': [],
+    'degree_type': [],
+    'early_career_pay': [],
+    'mid_career_pay': [],
+    'percentage_high_meaning': [],
+}
 
-soup = BeautifulSoup(page_html, 'html.parser')
-table = soup.find(_class='data-table', name="table")
-print(table)
+for i in range(1, 35):
+    print(i)
+    web_html = requests.get(f'https://www.payscale.com/college-salary-report/majors-that-pay-you-back/bachelors/page/{i}').text
+    soup = bs4.BeautifulSoup(web_html, 'html.parser')
 
-df = pd.read_html('https://www.payscale.com/college-salary-report/majors-that-pay-you-back/bachelors')
+    data_names = ['rank', 'major', 'degree_type', 'early_career_pay', 'mid_career_pay', 'percentage_high_meaning']
 
+    for data, data_name in zip(map(lambda x: x.text, soup.select('.data-table__value')), data_names*999):
+        data_dict[data_name].append(data)
