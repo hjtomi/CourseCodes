@@ -12,9 +12,11 @@ df = pd.read_excel('Beérkező áruk-2022.szeptember.xls')
 # Csak azokat tartjuk meg amelyeknek osszesen tobb mint 0 volt
 df = df[df['osszesen'] > 0]
 
+plt.xticks(rotation=45)
+
 nevek = []
 for nev, osszesen in zip(df['nev'], df['osszesen']):
-    i = 5
+    i = 10
     while nev[:i] in nevek:
         i += 1
 
